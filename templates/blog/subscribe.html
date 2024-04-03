@@ -1,0 +1,15 @@
+{% block subscribe_content %}
+
+<div class="well">
+    <h4>Subscribe to our Newsletter</h4>
+    <form method="post" action="{% url 'subscribe' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+</div>
+{% endblock %}
