@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, PostPhoto, Comment, Subscriber, Profile
+from .models import Post, PostPhoto, Comment, Subscriber, Profile, Tag
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
@@ -8,9 +8,16 @@ PhotoFormSet = forms.inlineformset_factory(Post, PostPhoto, fields=('image', 'de
 
 
 class PostForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PostForm, self).__init__(*args, **kwargs)
+        self.fields['tags'].queryset = Tag.objects.exclude(name__in=['Tag1', 'Tag2'])
+
     class Meta:
         model = Post
         exclude = ('published_date', 'user')
+        widgets = {
+            'tags': forms.SelectMultiple(attrs={'class': 'form-control'})
+        }
 
 
 class PhotoForm(forms.ModelForm):

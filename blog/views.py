@@ -2,9 +2,10 @@ from django.contrib.auth import logout as django_logout
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Post, Category, Comment, Tag, PostPhoto, Profile
+from .models import Post, Category, Comment, PostPhoto, Profile
 from .forms import PostForm, CommentForm, SubscriptionForm, UserProfileForm, RegistrationForm, PhotoFormSet, AvatarForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 def get_categories():
     all_categories = Category.objects.all()
@@ -58,7 +59,18 @@ def contact(request):
 def category(request, name=None):
     category_obj = get_object_or_404(Category, name=name)
     posts = Post.objects.filter(category=category_obj).order_by("-published_date")
-    context = {"posts": posts}
+
+    paginator = Paginator(posts, 2)
+    page = request.GET.get('page')
+
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    context = {"posts": posts, "category": category_obj}
     context.update(get_categories())
     return render(request, 'blog/index.html', context)
 
@@ -71,11 +83,6 @@ def add_comment(request, post_id):
         if text:
             comment = Comment.objects.create(post=post, author=author, text=text)
             comment.save()
-
-            tag1, created1 = Tag.objects.get_or_create(name='Tag1')
-            tag2, created2 = Tag.objects.get_or_create(name='Tag2')
-
-            post.tags.add(tag1, tag2)
     return redirect('post', post_id=post_id)
 
 
@@ -98,6 +105,8 @@ def create_post(request):
             post.save()
             formset.instance = post
             formset.save()
+
+            post_form.save_m2m()
             return redirect('post', post_id=post.pk)
     else:
         post_form = PostForm()
