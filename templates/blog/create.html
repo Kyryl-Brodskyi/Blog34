@@ -1,14 +1,14 @@
 {% extends "blog/base.html" %}
 {% block content %}
-  <h1>Create new post</h1>
-  <form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">
+<h1>Create new post</h1>
+<form action="{% url 'create' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ post_form.as_p }}
     <h4>Photos:</h4>
     {{ formset.management_form }}
     {% for form in formset %}
-      {{ form.as_p }}
+    {{ form.as_p }}
     {% endfor %}
-    <input type="submit" value="save" class="btn btn-default">
-  </form>
+    <input type="submit" value="Save" class="btn btn-default">
+</form>
 {% endblock %}

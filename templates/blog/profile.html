@@ -7,29 +7,29 @@
     <title>Profile</title>
 </head>
 <body>
-    <h1>User Profile</h1>
-   {% if user.is_authenticated %}
-        <p>Username: {{ user.username }}</p>
-        <p>Email: {{ user.email }}</p>
-        {% if user.first_name %}
-            <p>First Name: {{ user.first_name }}</p>
-        {% endif %}
-        {% if user.last_name %}
-            <p>Last Name: {{ user.last_name }}</p>
-        {% endif %}
-        {% if user.date_joined %}
-            <p>Date Joined: {{ user.date_joined }}</p>
-        {% endif %}
-        {% if user.is_authenticated and user.profile %}
-    <img src="{{ user.profile.avatar.url }}" alt="Avatar">
+<h1>User Profile</h1>
+{% if user.is_authenticated %}
+<p>Username: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+{% if user.first_name %}
+<p>First Name: {{ user.first_name }}</p>
 {% endif %}
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Загрузить</button>
-        </form>
-    {% else %}
-        <p>Пожалуйста, <a href="{% url 'login' %}">войдите</a>, чтобы увидеть профиль.</p>
-    {% endif %}
+{% if user.last_name %}
+<p>Last Name: {{ user.last_name }}</p>
+{% endif %}
+{% if user.date_joined %}
+<p>Date Joined: {{ user.date_joined }}</p>
+{% endif %}
+{% if user.is_authenticated and user.profile %}
+<img src="{{ user.profile.avatar.url }}" alt="Avatar">
+{% endif %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Загрузить</button>
+</form>
+{% else %}
+<p>Пожалуйста, <a href="{% url 'login' %}">войдите</a>, чтобы увидеть профиль.</p>
+{% endif %}
 </body>
 </html>
